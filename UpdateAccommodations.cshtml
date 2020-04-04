@@ -1,0 +1,387 @@
+﻿@using System.Data;
+@model DataSet[]
+@{
+    ViewBag.Title = "UpdateAccommodations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Custom/assets/css/UpdateAccommodations.css" rel="stylesheet" />
+@try
+{
+    if (@Session["LanguageName"].ToString() == "ar" || @Session["LanguageName"].ToString() == "fa" || @Session["LanguageName"].ToString() == "ur")
+    {
+        <style>
+                /*media (min-width: 768px){
+            #exampleFullForm .form-horizontal .form-control-label {
+                text-align: right !important;
+            }}
+                    input.form-control {
+                        text-align: end;
+                    }
+                    select {
+                        text-align-last: end;
+                    }*/
+                .MultiLang {
+                    display: inline-block !important;
+                }
+        </style>
+        <script>
+            //alert("Farooq Lang");
+        </script>
+    }
+    @*<style>
+            .MultiLang {
+                display: none;
+            }
+        </style>*@
+
+    using (Html.BeginForm("UpdateAccommodations", "Home", FormMethod.Post, new { id = "exampleFullForm" }))
+    {
+        if (TempData["Error"] != null)
+        {
+            <div class="alert dark alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                @TempData["Error"].
+            </div>
+        }
+        if (TempData["okey"] != null)
+        {
+            <div class="alert dark alert-icon alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <i class="icon wb-check" aria-hidden="true"></i> @TempData["okey"].
+            </div>
+        }
+        <div class="page-header">
+            <h1 class="page-title"><i class="fa fa-circle" aria-hidden="true"></i> Update Property <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.UpdateAccommodation</span></h1>
+
+            <div class="page-header-actions">
+
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+
+                    <span class="panel-desc">
+                        @*@Session["User"]*@
+                    </span>
+                </h3>
+
+            </div>
+
+            <div class="panel-body">
+
+                <div class="row row-lg">
+                    <div class="col-xl-6 form-horizontal">
+
+                        @*<div class="form-group form-material floating" data-plugin="formMaterial">
+                                <input type="text" class="form-control empty" value="" name="inputFloatingText">
+                                <label class="floating-label">Text</label>
+                            </div>*@
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Email Id <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.EmailId</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="icon wb-envelope" aria-hidden="true"></i>
+                                    </span>
+                                    <input type="text" class="form-control" name="_emailId" value="@Model[0].Tables[0].Rows[0]["EmailId"]" placeholder="email@email.com" @*onchange="return EmailValidate(this.value)"*@
+                                           required="">
+                                </div>
+                            </div><small class="invalid-feedback" id="EEmailId" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed ( .uk .com)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Contact No <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.ContactNo</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_contactNo" value="@Model[0].Tables[0].Rows[0]["ContactNo"]" placeholder="ContactNo " onchange="return MobileNoValidate(this.value)"
+                                       required="">
+                            </div>   <small class="invalid-feedback" id="EContactNo" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;    margin-left: 17px; display:none">special characters are not allowed (0-9)</small>
+
+                        </div>
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Property Category <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.PropertyCategory</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control PropertyCategory" id="PropertyCategory" name="_propertyCategory" required="">
+                                    <option value="@Model[0].Tables[0].Rows[0]["PropertyCategory"]">@Model[0].Tables[0].Rows[0]["PropertyCategory"]</option>
+                                    <option value="Roomph Standard">Roomph Standard</option>
+                                    <option value="Roomph Premium">Roomph Premium</option>
+                                    <option value="Guesthouse/B&B">Guesthouse/B&B</option>
+                                    <option value="Roomph Private Room">Roomph Private Room</option>
+
+                                    <option value="Apartment/Portion">Apartment/Portion</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Currency <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Currency</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                @{ var CurrencyId = @Model[0].Tables[0].Rows[0]["CurrencyId"].ToString();}
+                                <select class="form-control" id="CurrencyId" name="_currencyId" required="">
+                                    <option value="">Choose Currency</option>
+                                    @if (Model != null)
+                                    {
+                                        foreach (DataRow row in Model[1].Tables[0].Rows)
+                                        {
+                                            <option @if (CurrencyId == row["CurrencyId"].ToString()) { @("selected=selected") } value="@row["CurrencyId"]">
+                                                @row["CurrencyName"]
+                                            </option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script> alert('@TempData["Error"]');</script>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Extra Fee <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.ExtraFee</span>
+                                <span class="required"></span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                @{ var ExtraFeeTypeId = @Model[0].Tables[0].Rows[0]["ExtraFeeTypeId"].ToString();}
+
+                                <select class="form-control" id="ExtraFeeTypeId" name="_extraFeeTypeId">
+                                    @if (Model != null)
+                                    {
+                                        <option value="">Choose  ExtraFee  </option>
+                                        foreach (DataRow row in Model[2].Tables[0].Rows)
+                                        {
+                                            <option @if (ExtraFeeTypeId == row["ExtraFeeTypeId"].ToString()) { @("selected=selected") } value="@row["ExtraFeeTypeId"]">
+                                                @row["ExtraFeeTypeName"]
+                                            </option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script> alert('@TempData["Error"]');</script>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 form-horizontal">
+
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Post Code <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.PostCode</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_postCode" value="@Model[0].Tables[0].Rows[0]["PostCode"]" placeholder="PostCode" onchange="return PostCodeValidate(this.value)"
+                                       required="">
+                            </div>
+                            <small class="invalid-feedback" id="EPostCode" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed ( .uk .com)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Latitude <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Latitude</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_latitude" value="@Model[0].Tables[0].Rows[0]["Latitude"]" placeholder="Latitude" onchange="return LatitudeValidate(this.value)"
+                                       required="">
+                            </div>
+                            <small class="invalid-feedback" id="ELatitude" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none"> special characters are not allowed (0-9 .)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Longitude <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Longitude</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_longitude" value="@Model[0].Tables[0].Rows[0]["Longitude"]" placeholder="Longitude" onchange="return LongitudeValidate(this.value)"
+                                       required="">
+                            </div><small class="invalid-feedback" id="ELongitude" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;    margin-left: 17px; display:none"> special characters are not allowed (0-9 .)</small>
+
+                        </div>
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Roomph
+                                <span class="required"></span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <div class="checkbox-custom checkbox-success">
+                                    @{string chk = @Model[0].Tables[0].Rows[0]["WebSearch"].ToString();}
+                                    <input type="checkbox" name="_webSearch" onclick="RoomPhCheck()" @if (chk == "True" || chk == "1") { @("checked=checked") } value="True">
+                                    <label id="WebSearch"></label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Home Shopping
+                                <span class="required"></span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <div class="checkbox-custom checkbox-success">
+                                    @{string HomeShopping = @Model[0].Tables[0].Rows[0]["HomeShopping"].ToString();}
+                                    <input type="checkbox" name="_HomeShopping" @if (HomeShopping == "True" || HomeShopping == "1") { @("checked=checked") } value="True">
+                                    <label id="_HomeShopping"></label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group col-xl-12 text-right padding-top-m">
+                        <button type="submit" class="btn btn-primary" id="validateButton1">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        function RoomPhCheck() {
+            var radioValue = $("input[name='_webSearch']:checked").val();
+            if (radioValue == 1) {
+                $("#_webSearch").text('On');
+            }
+            else {
+                $("#_webSearch").text('Off');
+            }
+        }
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            PropertyCategoryRemove();
+            RoomPhCheck();
+        });
+        function PropertyCategoryRemove() {
+            var map = {};
+            $('#PropertyCategory option').each(function () {
+                if (map[this.value]) {
+                    $(this).remove()
+                }
+                map[this.value] = true;
+            });
+        }
+
+        function NameValidate(val) {
+
+            var isValid = false;
+            var regex = /^[A-Z a-z - 0-9 \s]+$/;
+            isValid = regex.test(val);
+            $('#EAccommodationName').css("display", "none");
+            if (isValid == false) {
+                $('#EAccommodationName').css("display", "block");
+            }
+            return isValid;
+        }
+        function MobileNoValidate(val) {
+
+            var isValid = false;
+            var regex = /^(?=.*?[1-9 ])[0-9()-+-\s]+$/;
+            isValid = regex.test(val);
+            $('#EContactNo').css("display", "none");
+            if (isValid == false) {
+                $('#EContactNo').css("display", "block");
+            }
+
+        }
+
+        function EmailValidate(val) {
+            var isValid = false;
+            var regex = /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            isValid = regex.test(val);
+            $('#EEmailId').css("display", "none");
+            if (isValid == false) {
+                $('#EEmailId').css("display", "block");
+            }
+            return isValid;
+        }
+        function PostCodeValidate(val) {
+            var isValid = false;
+            var regex = /^[A-Z a-z 0-9 , . - \s]+$/;
+            isValid = regex.test(val);
+            $('#EPostCode').css("display", "none");
+            if (isValid == false) {
+                $('#EPostCode').css("display", "block");
+            }
+            return isValid;
+        }
+
+        function LatitudeValidate(val) {
+
+            var isValid = false;
+            var regex = /^[0-9.-\s]+$/;
+            isValid = regex.test(val);
+            $('#ELatitude').css("display", "none");
+            if (isValid == false) {
+                $('#ELatitude').css("display", "block");
+            }
+            return isValid;
+
+        }
+
+        function LongitudeValidate(val) {
+            var isValid = false;
+            var regex = /^[0-9.-\s]+$/;
+            isValid = regex.test(val);
+            $('#ELongitude').css("display", "none");
+            if (isValid == false) {
+                $('#ELongitude').css("display", "block");
+            }
+            return isValid;
+        }
+    </script>
+
+<script src="~/global/vendor/jquery/jquery.min.js"></script>
+<script>
+    function OnclickAssigningAccommodation(UserId, AccommodationId, Action) {
+        var Action = 0;
+        var checked = $('#AccommodationId_' + UserId + '_' + AccommodationId).is(':checked');
+        if (checked) {
+            Action = 1;
+            }
+        else { Action = 0 }
+        //
+        var url = '@Url.Action("OnclickAssigningAccommodation", "Home")';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { UserId: UserId, AccommodationId: AccommodationId, Action: Action},
+            dataType: "json",
+            success: function (result) {
+                //alert(result);
+                //$('#mes').show();
+                //$('#mapmessage').html(result['message']);
+            },
+            error: function (result) {
+                $('#error').show();
+            }
+        });
+    }
+</script>
+}
+catch (Exception ex)
+{
+<script>
+        console.log("Getting Error: Record Not Display");
+      var url = '@Url.Action("Error", "Home")';
+             window.location.href = url;
+</script>
+}

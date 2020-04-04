@@ -1,0 +1,404 @@
+﻿@using System.Data;
+@model DataSet[]
+@{
+    ViewBag.Title = "AddNewAccommodations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@try
+{
+    if (@Session["LanguageName"].ToString() == "ar" || @Session["LanguageName"].ToString() == "fa" || @Session["LanguageName"].ToString() == "ur")
+    {
+        <style>
+            /*media (min-width: 768px){
+            #exampleFullForm .form-horizontal .form-control-label {
+                text-align: right !important;
+            }}
+                    input.form-control {
+                        text-align: end;
+                    }
+                    select {
+                        text-align-last: end;
+                    }*/
+            .MultiLang {
+                display: inline-block !important;
+            }
+        </style>
+    }
+    <style>
+        .MultiLang {
+            display: none;
+        }
+    </style>
+    <!-- Panel Full Example -->
+    using (Html.BeginForm("AddNewAccommodations", "Home", FormMethod.Post, new { id = "exampleFullForm" }))
+    {
+
+        if (TempData["Error"] != null)
+        {
+            <div class="alert dark alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>  @TempData["Error"].
+            </div>
+        }
+        if (TempData["okey"] != null)
+        {
+            <div class="alert dark alert-icon alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <i class="icon wb-check" aria-hidden="true"></i> @TempData["okey"].
+            </div>
+        }
+        <div class="page-header">
+            <h1 class="page-title"><i class="fa fa-circle" aria-hidden="true"></i> Create Property <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.CreateAccommodation</span></h1>
+
+            <div class="page-header-actions">
+
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+
+                    <span class="panel-desc">
+                        @*@Session["User"]*@
+                    </span>
+                </h3>
+            </div>
+            @if (@ViewBag.Sub == "ar" || @ViewBag.Sub == "fa")
+            {
+                <script>
+                    alert("Language");
+                </script>
+            }
+            <div class="panel-body">
+
+                <div class="row row-lg">
+                    <div class="col-xl-6 form-horizontal">
+                        @*<div class="form-group form-material" data-plugin="formMaterial">
+                                <label class="form-control-label" for="inputText">Text</label>
+                                <input type="text" class="form-control" id="inputText" name="inputText" placeholder="Text">
+                            </div>*@
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Accommodation Name <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.AccommodationName</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_accommodationName" placeholder="Accommodation Name" onchange="return NameValidate(this.value)" required="">
+                            </div>
+                            <small class="invalid-feedback" id="EAccommodationName" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed (A-Z 0-9)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Accommodation Type <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.AccommodationType</span>
+                                @*@BookingWhizzAdmins.Resourecs.HomeTexts.Accommodation*@
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="AccommodationTypeId" name="_accommodationTypeId" required="">
+                                    <option value="" selected>Choose Accommodation Type</option>
+                                    @if (Model != null)
+                                    {
+                                        foreach (DataRow row in Model[0].Tables[0].Rows)
+                                        {
+                                            <option class="MultiLanguageId" value="@row["AccommodationTypeId"]">@row["AccommodationTypeName"]</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script> alert('@TempData["Error"]');</script>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Property Category <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.PropertyCategory</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="PropertyCategory" name="_propertyCategory" required="">
+                                    <option value="Standard" selected>Standard</option>
+                                    <option value="Premium">Premium</option>
+                                    <option value="Private">Private</option>
+                                    <option value="Feature">Feature</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Time Zone <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.TimeZone</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="TimeZoneId" name="_timeZoneId" required="">
+                                    <option value="" selected>Choose Time </option>
+                                    @if (Model != null)
+                                    {
+                                        foreach (DataRow row in Model[2].Tables[0].Rows)
+                                        {
+                                            <option class="MultiLanguageId" value="@row["TimeZoneId"]">@row["TimeZoneName"]</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script> alert('@TempData["Error"]');</script>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Country <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Country</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="Country" name="_contactNo" required="">
+                                    <option value="" selected>Choose Country </option>
+                                    @if (Model != null)
+                                    {
+                                        foreach (DataRow row in Model[1].Tables[0].Rows)
+                                        {
+                                            <option class="MultiLanguageId" value="@row["CountryId"]">@row["CountryName"]</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script> alert('@TempData["Error"]');</script>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                City <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.City</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="City" name="_addressId" required="">
+                                    <option value="">Choose City</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Currency <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Currency</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="CurrencyId" name="_currencyId" required="">
+                                    <option value="" selected>Choose Currency</option>
+                                    @if (Model != null)
+                                    {
+                                        foreach (DataRow row in Model[3].Tables[0].Rows)
+                                        {
+                                            <option value="@row["CurrencyId"]">@row["CurrencyName"]</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script> alert('@TempData["Error"]');</script>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xl-6 form-horizontal">
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Contact No <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.ContactNo</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_contactNo" placeholder="Contact No " onchange="return MobileNoValidate(this.value)" required="">
+                            </div>
+                            <small class="invalid-feedback" id="EContactNo" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;    margin-left: 17px; display:none"> special characters are not allowed (0-9)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Email Id  <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.EmailId</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="icon wb-envelope" aria-hidden="true"></i>
+                                    </span>
+                                    <input type="email" class="form-control" name="_emailId" placeholder="email@email.com" onchange="return EmailValidate(this.value)" required="">
+                                </div>
+                            </div>
+                            <small class="invalid-feedback" id="EEmailId" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed ( .uk .com)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Post Code <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.PostCode</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_postCode" placeholder="Post Code" onchange="return PostCodeValidate(this.value)" required="">
+                            </div>
+                            <small class="invalid-feedback" id="EPostCode" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed ( A-Z a-z 0-9 , .)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Latitude <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Latitude</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_latitude" placeholder="Latitude" onchange="return LatitudeValidate(this.value)" required="">
+                            </div>
+                            <small class="invalid-feedback" id="ELatitude" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none"> special characters are not allowed ( . 0-9)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Longitude <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Longitude</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_longitude" placeholder="Longitude" onchange="return LongitudeValidate(this.value)" required="">
+                            </div>
+                            <small class="invalid-feedback" id="ELongitude" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;    margin-left: 17px; display:none"> special characters are not allowed (  . 0-9)</small>
+
+                        </div>
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Roomph
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <div class="checkbox-custom checkbox-success">
+                                    <input type="checkbox" name="_webSearch" value="True">
+                                    <label></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Home Shopping
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <div class="checkbox-custom checkbox-success">
+                                    <input type="checkbox" name="_HomeShopping" value="True">
+                                    <label></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-xl-12 text-right padding-top-m">
+                        <button type="submit" class="btn btn-primary" id="validateButton1">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    <script>
+        function NameValidate(val) {
+
+            var isValid = false;
+            var regex = /^[A-Z a-z - 0-9 \s]+$/;
+            isValid = regex.test(val);
+            $('#EAccommodationName').css("display", "none");
+            if (isValid == false) {
+                $('#EAccommodationName').css("display", "block");
+            }
+            return isValid;
+        }
+        function MobileNoValidate(val) {
+
+            var isValid = false;
+            var regex = /^(?=.*?[1-9 ])[0-9()-+-\s]+$/;
+            isValid = regex.test(val);
+            $('#EContactNo').css("display", "none");
+            if (isValid == false) {
+                $('#EContactNo').css("display", "block");
+            }
+
+        }
+        function EmailValidate(val) {
+            var isValid = false;
+            var regex = /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            isValid = regex.test(val);
+            $('#EEmailId').css("display", "none");
+            if (isValid == false) {
+                $('#EEmailId').css("display", "block");
+            }
+            return isValid;
+        }
+        function PostCodeValidate(val) {
+            var isValid = false;
+            var regex = /^[A-Z a-z 0-9 , . - \s]+$/;
+            isValid = regex.test(val);
+            $('#EPostCode').css("display", "none");
+            if (isValid == false) {
+                $('#EPostCode').css("display", "block");
+            }
+            return isValid;
+        }
+        function LatitudeValidate(val) {
+
+            var isValid = false;
+            var regex = /^[0-9.-\s]+$/;
+            isValid = regex.test(val);
+            $('#ELatitude').css("display", "none");
+            if (isValid == false) {
+                $('#ELatitude').css("display", "block");
+            }
+            return isValid;
+
+        }
+        function LongitudeValidate(val) {
+            var isValid = false;
+            var regex = /^[0-9.-\s]+$/;
+            isValid = regex.test(val);
+            $('#ELongitude').css("display", "none");
+            if (isValid == false) {
+                $('#ELongitude').css("display", "block");
+            }
+            return isValid;
+        }
+    </script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+    $("#Country").on('change', function () {
+                    var _countryId = $("#Country").val();
+                    var url = '@Url.Action("SelectedCity", "Home")';
+                     $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: { _countryId: _countryId },
+                        dataType: "json",
+                         success: function (result) {
+                            $('#City')
+                            .empty()
+                                .append('<option selected="selected" value="whatever">- Selected City -</option>');
+                            $.each(result, function (el, val, ) {
+                                $('#City').append('<option value="' + val.AddressId + '">' + val.CityName + '</option>');
+                            });
+                        },
+                        error: function (result) {
+                            alert("failed");
+                        }
+                    });
+                });
+    </script>}
+catch (Exception ex)
+{
+    <script>
+        console.log("Getting Error: Record Not Display");
+      var url = '@Url.Action("Error", "Home")';
+             window.location.href = url;
+    </script>
+}

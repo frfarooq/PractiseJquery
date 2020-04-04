@@ -1,0 +1,632 @@
+﻿
+@{
+    ViewBag.Title = "AccommodationDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Data;
+@model DataSet[]
+<link href="~/Custom/assets/css/AccommodationDetails.css" rel="stylesheet" />
+@try
+{
+    if (@Session["LanguageName"].ToString() == "ar" || @Session["LanguageName"].ToString() == "fa" || @Session["LanguageName"].ToString() == "ur")
+    {
+        <style>
+                /*media (min-width: 768px){
+            #exampleFullForm .form-horizontal .form-control-label {
+                text-align: right !important;
+            }}
+                    input.form-control {
+                        text-align: end;
+                    }
+                    select {
+                        text-align-last: end;
+                    }*/
+                .MultiLang {
+                    display: inline-block !important;
+                }
+        </style>
+        <script>
+            //alert("Farooq Lang");
+        </script>
+    }
+    @*<style>
+            .MultiLang {
+                display: none;
+            }
+            .panel.localnav {
+                margin-top: -28px;
+            }
+            button.btn.btn-block.btn-default {
+                font-size: 12px;
+            }
+            .btn-default {
+                color: #111;
+                background-color: #ffffff;
+                border-color: #ffffff;
+                box-shadow: none;
+            }
+            a.local {
+                color: black;
+            }
+            .btn-default.focus, .btn-default.hover, .btn-default:focus, .btn-default:hover {
+                color: #ffffff;
+                background-color: #e6e6e6 !important;
+                border-color: #f3f7f9;
+                box-shadow: none;
+            }
+            .page-header-actions {
+                position: absolute;
+                top: 50%;
+                right: -25px;
+                margin: auto;
+                -webkit-transform: translateY(-50%);
+                transform: translateY(-50%);
+            }
+            a.btn.btn-sm.btn-icon.btn-default.btn-outline.btn-round {
+                color: #ff1515;
+                border: #284273 1px solid;
+            }
+        </style>*@
+
+    using (Html.BeginForm("AccommodationDetails", "Home", FormMethod.Post, new { enctype = "Multipart/form-data", id = "exampleFullForm" }))
+    {
+
+        <div class="panel localnav">
+            <div class="search-form inventory-search-form">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <a style="background-color: none;" class="btn btn-block btn-default local" href="@Url.Action("AccommodationDetails", "Home")">Property Details</a>
+                        </div>
+                        <div class="col-md-2">
+                            <a style="background-color: none;" class="btn btn-block btn-default local" href="@Url.Action("AdditionalDetails", "Home")">Additional Details</a>
+                        </div>
+                        <div class="col-md-2">
+                            <a style="background-color: none;" class="btn btn-block btn-default local" href="@Url.Action("AccommodationsImages", "Home")">Property Images</a>
+                        </div>
+                        <div class="col-md-2">
+                            <a style="background-color: none;" class="local btn btn-block btn-default" href="@Url.Action("ManageLocation", "Home")">Property Location</a>
+                        </div>
+                        <div class="col-md-2">
+                            <a style="background-color: none;" class="local btn btn-block btn-default" href="@Url.Action("AccommodationFacilities", "Home")">Property Facilities</a>
+                        </div>
+                        <div class="col-md-2">
+                            <a style="background-color: none;" class="local btn btn-block btn-default" href="@Url.Action("GetRoom", "Inventory")">All Rooms</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title"><i class="fa fa-circle" aria-hidden="true"></i>  Property Details @*<span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.AccommodationDetails</span>*@</h1>
+            @*<ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Forms</a></li>
+                    <li class="breadcrumb-item active">Validation</li>
+                </ol>*@
+            @*<div class="page-header-actions">
+                   @{ var website = @Model[0].Tables[0].Rows[0]["Website"].ToString();}
+                    @if (website.Length > 1)
+                    {
+                     <a href="@website" target="_blank"  data-original-title="Website" class="btn btn-sm btn-icon btn-default btn-outline btn-round" target="_blank" href="@website"> <i class="icon wb-desktop" aria-hidden="true"></i>  Website</a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-sm btn-icon btn-default btn-outline btn-round" data-target="#exampleNiftyFadeScale"
+                                data-toggle="modal" data-original-title="Website">
+                            <i class="icon wb-edit" aria-hidden="true"></i> Create Website
+                        </button>
+                    }
+                </div>*@
+        </div>
+        if (TempData["okey"] != null)
+        {
+            <div class="alert dark alert-icon alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <i class="icon wb-check" aria-hidden="true"></i> @TempData["okey"].
+            </div>
+        }
+        if (TempData["Error"] != null)
+        {
+            <div class="alert dark alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>  @TempData["Error"].
+            </div>
+        }
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title"></h3>
+            </div>
+            <div class="panel-body">
+                <div class="row row-lg">
+                    <div class="col-xl-6 form-horizontal">
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Accommodation Name <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.AccommodationName</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_contactNo" disabled value="@Model[0].Tables[0].Rows[0]["AccommodationName"]" placeholder="ContactNo "
+                                       required="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Accommodation Type <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.AccommodationType</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                @{var AccommodationTypeName = @Model[0].Tables[0].Rows[0]["AccommodationTypeName"].ToString();}
+                                <select class="form-control" id="AccommodationTypeId" name="_accommodationTypeId" required="">
+                                    <option value="" selected>Choose Accommodation Type</option>
+                                    @if (Model != null)
+                                    {
+                                        foreach (DataRow row in Model[3].Tables[0].Rows)
+                                        {
+                                            var rows = row[2].ToString();
+                                            if (rows == AccommodationTypeName)
+                                            {
+                                                <option class="MultiLanguageId" selected value="@row["AccommodationTypeId"]">@rows</option>
+                                            }
+                                            else
+                                            {
+                                                <option class="MultiLanguageId" value="@row["AccommodationTypeId"]">@row["AccommodationTypeName"]</option>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <script> alert('@TempData["Error"]');</script>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Accommodation Address <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.AccommodationAddress</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_address" value="@Model[0].Tables[0].Rows[0]["Address"]" placeholder="Address"
+                                       required="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Zip/Post Code <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.ZipPostCode</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_contactNo" disabled value="@Model[0].Tables[0].Rows[0]["PostCode"]" placeholder="PostCode "
+                                       required="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Country <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Country</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="Country" name="_country" required>
+                                    <option value="" selected>Choose Country </option>
+                                    @{var CountryId = @Model[0].Tables[0].Rows[0]["CountryName"].ToString();}
+                                    @foreach (DataRow row in Model[2].Tables[0].Rows)
+                                    {
+                                        var rowId = row[3].ToString();
+                                        if (rowId == CountryId)
+                                        {
+                                            <option class="MultiLanguageId" selected value="@row["CountryId"]">@row["CountryName"]</option>
+                                        }
+                                        <option class="MultiLanguageId" value="@row["CountryId"]">@row["CountryName"]</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                City  <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.City</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="City" name="_addressId" required>
+                                    <option class="MultiLanguageId" value="@Model[0].Tables[0].Rows[0]["AddressId"]">@Model[0].Tables[0].Rows[0]["CityName"]</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Location <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Location</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" disabled value="@Model[0].Tables[0].Rows[0]["Address"] , @Model[0].Tables[0].Rows[0]["CityName"],@Model[0].Tables[0].Rows[0]["CountryName"]"
+                                       required="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Star Class <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.StarClass</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                @{ var str = @Model[0].Tables[0].Rows[0]["Rating"].ToString();}
+                                <select class="form-control" id="Rating" name="_rating" required="" data-fv-field="company">
+                                    <option>@str</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                                <small class="invalid-feedback" data-fv-validator="notEmpty" data-fv-for="company" data-fv-result="NOT_VALIDATED" style="display: none;">Please Rating</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Website <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.Website</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_website" value="@Model[0].Tables[0].Rows[0]["Website"]" @*onchange="return WebsiteValidate(this.value)"*@ placeholder="Website ">
+                            </div>
+                            <small class="invalid-feedback" id="EWebsite" data-fv-validator="notEmpty" data-fv-for="Website" data-fv-result="INVALID" style="display: inline; margin-left: 17px;display:none">special characters are not allowed (www.xyz.com)</small>
+
+                        </div>
+
+                        <div class="form-group row">
+                            @{ var AccommdationLogo = @Model[0].Tables[0].Rows[0]["AccommdationLogo"].ToString();}
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Hotel Logo <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.HotelLogo</span>
+                                <span class="required"></span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                @if (AccommdationLogo == "")
+                                {
+                                    <input type="file" name="Files" id="imgInp" style="padding-left: 28px; margin-bottom: 20px;" onchange="readURL(this)">
+                                    <img id="blah" src="#" height="50" width="50" style=" padding: 5px; margin: 0px 6px 21px -3px;" />
+                                }
+                                else
+                                {
+                                    <input type="file" name="Files" id="imgInp" style="padding-left: 28px; margin-bottom: 20px;" onchange="readURL(this)">
+                                    <img id="blah" src="@AccommdationLogo" height="50" width="50" style="border: 2px solid; padding: 5px; margin: 0px 6px 21px -3px;" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 form-horizontal">
+
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                General E-mail <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.GeneralEmail</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="icon wb-envelope" aria-hidden="true"></i>
+                                    </span>
+                                    <input type="text" class="form-control" name="_emailId" value="@Model[0].Tables[0].Rows[0]["EmailId"]" placeholder="email@email.com" @*onchange="return EmailIdValidate(this.value)"*@
+                                           required="">
+                                </div>
+                            </div>
+                            <small class="invalid-feedback" id="EEmailId" data-fv-validator="notEmpty" data-fv-for="EEmailId" data-fv-result="INVALID" style="display: inline; margin-left: 17px;display:none">special characters are not allowed (A-Z a-z .uk .com)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Total Number of Rooms <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.TotalNumberofRooms</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_totalRooms" value="@Model[0].Tables[0].Rows[0]["TotalRooms"]" placeholder="TotalRooms " onchange="return TotalRoomsValidate(this.value)"
+                                       required="">
+                            </div>
+                            <small class="invalid-feedback" id="ETotalRooms" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none"> special characters are not allowed (0-9)</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                General Telephone Number <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.GeneralTelephoneNumber</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_contactNo" value="@Model[0].Tables[0].Rows[0]["ContactNo"]" placeholder="ContactNo " onchange="return ContactNoValidate(this.value)"
+                                       required="">
+                            </div>
+                            <small class="invalid-feedback" id="EContactNo" data-fv-validator="notEmpty" data-fv-for="ContactNo" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none"> special characters are not allowed (0-9 ( ) - )</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Fax Number  <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.FaxNumber</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" name="_faxNo" value="@Model[0].Tables[0].Rows[0]["FaxNo"]" placeholder="FaxNo " onchange="return FaxNoValidate(this.value)"
+                                       required="">
+                            </div>
+                            <small class="invalid-feedback" id="EFaxNo" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none"> special characters are not allowed (0-9 ( ) - )</small>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Choose to Receive Confirmation of Bookings By <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.ChoosetoReceiveConfirmationofBookingsBy</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <select class="form-control" id="BookingMediaId" name="_bookingMediaId" required="">
+                                    @foreach (DataRow row in Model[1].Tables[0].Rows)
+                                    {
+                                        <option value="@row["BookingMediaId"]">@row["BookingMediaName"]</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row" id="BEmail">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Booking Confirmation Email  <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.BookingConfirmationEmail</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" id="BookingMediaEmail" name="_bookingMediaEmail" value="@Model[0].Tables[0].Rows[0]["BookingMediaEmail"]" onchange="return BookingMediaEmailValidate(this.value)" placeholder="BookingMediaEmail "
+                                       required="">
+                            </div>
+                            <small class="invalid-feedback" id="EBookingMediaEmail" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed (A-Z .com .uk)</small>
+
+                        </div>
+                        <div class="form-group row" id="BFax">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                Booking Confirmation Fax <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.BookingConfirmationFax</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class=" col-xl-12 col-md-9">
+                                <input type="text" class="form-control" id="BookingMediaFax" name="_bookingMediaFax" value="@Model[0].Tables[0].Rows[0]["BookingMediaFax"]" placeholder="BookingMediaFax " onchange="return BookingMediaFaxValidate(this.value)"
+                                       required="">
+                            </div>
+                            <small class="invalid-feedback" id="EBookingMediaFax" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none"> special characters are not allowed (0-9 ( ) - )</small>
+
+                        </div>
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+
+                                Accommodation Description <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.AccommodationDescription</span> :(Roomph)
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <textarea class="form-control" style="min-height:127px" @*onchange="return GeneralDescriptionValidate(this.value)"*@ name="_generalDescription" rows="3" placeholder="" required="" data-fv-field="skills">@Model[0].Tables[0].Rows[0]["GeneralDescription"]</textarea>
+                                <small class="invalid-feedback" data-fv-validator="notEmpty" data-fv-for="skills" data-fv-result="NOT_VALIDATED" style="display: none;">General Description</small><small class="invalid-feedback" data-fv-validator="stringLength" data-fv-for="skills" data-fv-result="NOT_VALIDATED" style="display: none;">Please enter a value with valid length</small>
+                            </div>
+                            <small class="invalid-feedback" id="EGeneralDescription" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed (A-Z a-z - 0-9 / # ! - *)</small>
+
+                        </div>
+                        <div class="form-group row RoomPh">
+                            <label class="col-xl-12 col-md-3 form-control-label">
+                                What Guest Like Best About This Property? <span class="MultiLang"> @BookingWhizzAdmins.Resourecs.HomeTexts.WhatGuestLikeBestAboutThisProperty</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-xl-12 col-md-9">
+                                <textarea class="form-control" style="min-height:127px" @*onchange="return GeneralDescriptionValidate(this.value)"*@ name="_areaOfInterest" rows="2" placeholder="" data-fv-field="skills">@Model[0].Tables[0].Rows[0]["AreaOfInterest"]</textarea>
+                                <small class="invalid-feedback" data-fv-validator="notEmpty" data-fv-for="skills" data-fv-result="NOT_VALIDATED" style="display: none;">Short Description</small><small class="invalid-feedback" data-fv-validator="stringLength" data-fv-for="skills" data-fv-result="NOT_VALIDATED" style="display: none;">Please enter a value with valid length</small>
+                            </div>
+                            <small class="invalid-feedback" id="EShortDescription" data-fv-validator="notEmpty" data-fv-for="LoginId" data-fv-result="INVALID" style="display: inline;     margin-left: 17px;display:none">special characters are not allowed (A-Z a-z - 0-9 / # ! - *)</small>
+
+                        </div>
+                    </div>
+                    <div class="form-group col-xl-12 text-right padding-top-m">
+                        <button type="submit" class="btn btn-primary" id="validateButton1">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Modal -->
+    using (Html.BeginForm("CreateWebsite", "Home", FormMethod.Post, new { id = "CreateWebsite" }))
+    {
+        <div class="modal fade modal-fade-in-scale-up" id="exampleNiftyFadeScale" aria-hidden="true"
+             aria-labelledby="exampleModalTitle" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-simple">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+                        <h4 class="modal-title">Create Website</h4>
+                    </div>
+                    <div class="modal-body">
+                        Are you Sure !
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="saveNewRoomType">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    <!-- End Modal -->
+    <script src="~/global/vendor/jquery/jquery.min.js"></script>
+
+    <script>
+        function WebsiteValidate(val) {
+            var isValid = false;
+            var regex = /^[A-Z a-z . 0-9]+$/;
+            isValid = regex.test(val);
+            $('#EWebsite').css("display", "none");
+            if (isValid == false) {
+                $('#EWebsite').css("display", "block");
+            }
+            return isValid;
+        }
+        function EmailIdValidate(val) {
+            var isValid = false;
+            var regex = /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3}),,+$/;
+            isValid = regex.test(val);
+            $('#EEmailId').css("display", "none");
+            if (isValid == false) {
+                $('#EEmailId').css("display", "block");
+            }
+            return isValid;
+        }
+        function TotalRoomsValidate(val) {
+            var isValid = false;
+            var regex = /^[0-9 - \s]+$/;
+            isValid = regex.test(val);
+            $('#ETotalRooms').css("display", "none");
+            if (isValid == false) {
+                $('#ETotalRooms').css("display", "block");
+            }
+            return isValid;
+        }
+        function ContactNoValidate(val) {
+
+            var isValid = false;
+            var regex = /^(?=.*?[1-9 ])[0-9()-+-\s]+$/;
+            isValid = regex.test(val);
+            $('#EContactNo').css("display", "none");
+            if (isValid == false) {
+                $('#EContactNo').css("display", "block");
+            }
+
+        }
+        function FaxNoValidate(val) {
+
+            var isValid = false;
+            var regex = /^(?=.*?[1-9 ])[0-9()-+-\s]+$/;
+            isValid = regex.test(val);
+            $('#EFaxNo').css("display", "none");
+            if (isValid == false) {
+                $('#EFaxNo').css("display", "block");
+            }
+
+        }
+        function BookingMediaEmailValidate(val) {
+            var isValid = false;
+            var regex = /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            isValid = regex.test(val);
+            $('#EBookingMediaEmail').css("display", "none");
+            if (isValid == false) {
+                $('#EBookingMediaEmail').css("display", "block");
+            }
+            return isValid;
+        }
+        function BookingMediaFaxValidate(val) {
+
+            var isValid = false;
+            var regex = /^(?=.*?[1-9 ])[0-9()-+-\s]+$/;
+            isValid = regex.test(val);
+            $('#EBookingMediaFax').css("display", "none");
+            if (isValid == false) {
+                $('#EBookingMediaFax').css("display", "block");
+            }
+
+        }
+        function GeneralDescriptionValidate(val) {
+
+            var isValid = false;
+            var regex = /^(?=.*?[A-Z a-z - 0-9])[A-Z a-z - 0-9 # ()--+ - \s]+$/;
+            isValid = regex.test(val);
+            $('#EGeneralDescription').css("display", "none");
+            if (isValid == false) {
+                $('#EGeneralDescription').css("display", "block");
+            }
+            return isValid;
+        }
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#BEmail").hide();
+            $("#BFax").hide();
+
+            $('#BookingMediaId').on('change', function () {
+                if ($("#BookingMediaId").val() == 1) {
+                    $("#BEmail").show();
+                    $("#BFax").hide();
+                    $("#BookingMediaFax").val('') == null;
+                }
+                if ($("#BookingMediaId").val() == 2) {
+                    $("#BEmail").hide();
+                    $("#BookingMediaEmail").val('') == null;
+                    $("#BFax").show();
+                }
+                if ($("#BookingMediaId").val() == 3) {
+                    $("#BEmail").show();
+                    $("#BFax").show();
+                }
+            })
+        });
+    </script>
+    <script>
+ function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    .width(50)
+                    .height(50);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+        @*$(document).ready(function () {
+            var CountryId = $("#Country").val();
+                    var url = '@Url.Action("SelectedCity", "Home")';
+                     $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: { CountryId: CountryId },
+                        dataType: "json",
+                         success: function (result) {
+                            $('#City')
+                            .empty()
+                                .append('<option selected="selected" disabled value="whatever">- Selected City -</option>');
+                            $.each(result, function (el, val, ) {
+                                $('#City').append('<option value="' + val.AddressId + '">' + val.CityName + '</option>');
+                            });
+                        },
+                        error: function (result) {
+                            alert("failed");
+                        }
+                    });
+    });*@
+    $("#Country").on('change', function () {
+        var _countryId = $("#Country").val();
+                    var url = '@Url.Action("SelectedCity", "Home")';
+                     $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: { _countryId: _countryId },
+                        dataType: "json",
+                         success: function (result) {
+                            $('#City')
+                            .empty()
+                                .append('<option selected="selected" disabled value="whatever">- Selected City -</option>');
+                            $.each(result, function (el, val, ) {
+                                $('#City').append('<option value="' + val.AddressId + '">' + val.CityName + '</option>');
+                            });
+                        },
+                        error: function (result) {
+                            alert("failed");
+                        }
+                    });
+                });
+    </script>
+
+}
+catch (Exception ex)
+{
+
+    <script>
+        console.log("Getting Error: Record Not Display");
+      var url = '@Url.Action("Error", "Home")';
+             window.location.href = url;
+    </script>
+}
